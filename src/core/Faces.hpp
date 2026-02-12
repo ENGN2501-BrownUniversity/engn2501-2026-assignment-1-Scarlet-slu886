@@ -5,7 +5,7 @@
 //
 // Faces.hpp
 //
-// Written by: <Your Name>
+// Written by: <Sijia Wei>
 //
 // Software developed for the course
 // Digital Geometry Processing
@@ -88,6 +88,12 @@ public:
   int     getNextCorner(const int iC)              const;
 
 private:
+    int _nV;
+    int _nF;
+    vector<int> _coordIndex;
+    vector<int> _faceFirstCorner;
+    vector<int> _cornerFace;
+
 
   // TODO
 

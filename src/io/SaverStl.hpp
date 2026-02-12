@@ -5,7 +5,7 @@
 //
 // SaverStl.hpp
 //
-// Written by: <Your Name>
+// Written by: <Sijia Wei>
 //
 // Software developed for the course
 // Digital Geometry Processing

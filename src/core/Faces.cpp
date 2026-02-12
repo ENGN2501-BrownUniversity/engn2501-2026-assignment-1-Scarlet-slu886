@@ -5,7 +5,7 @@
 //
 // Faces.cpp
 //
-// Written by: <Your Name>
+// Written by: <Sijia Wei>
 //
 // Software developed for the course
 // Digital Geometry Processing
@@ -38,46 +38,114 @@
 #include "Faces.hpp"
   
 Faces::Faces(const int nV, const vector<int>& coordIndex) {
-  // TODO
+    // define variance
+    _coordIndex = coordIndex;
+    _nV = nV;
+    _nF = 0;
+
+    //scan all the data and calculate the number of faces
+    int maxVertexIndex = -1;
+    int currentFaceStart = 0;
+    bool isNewFace = true;
+
+    for (int i = 0; i < _coordIndex.size(); ++i){
+        int val = _coordIndex[i];
+        if (val == -1){
+            _cornerFace.push_back(-1);
+        }else{
+            _cornerFace.push_back(_nF);
+            if (val > maxVertexIndex) maxVertexIndex = val;
+        }
+
+        //test faces
+        if (isNewFace) {
+            if (val != -1){
+                _faceFirstCorner.push_back(i);
+                _nF++;
+                isNewFace = false;
+            }
+        }
+
+        //if meet -1, means current face is finished and the next one is new face
+        if (val == -1) {
+            isNewFace= true;
+        }
+
+    }
+
+//check the number of vertices
+    if (maxVertexIndex >= _nV) {
+        _nV= maxVertexIndex + 1;
+    }
+
 }
 
 int Faces::getNumberOfVertices() const {
   // TODO
-  return 0;
+  return _nV;
 }
 
 int Faces::getNumberOfFaces() const {
   // TODO
-  return 0;
+  return _nF;
 }
 
 int Faces::getNumberOfCorners() const {
   // TODO
-  return 0;
+    return (int)_coordIndex.size();
 }
 
 int Faces::getFaceSize(const int iF) const {
-  // TODO
-  return 0;
+  // if step out then return to 0
+  if ( iF <0 || iF >= _nF ) return 0;
+
+  int start = _faceFirstCorner[iF];
+  int count = 0;
+
+  //count from the start untill -1
+  for (int i= start; i< _coordIndex.size(); ++i){
+      if (_coordIndex[i]== -1) break;
+      count++;
+  }
+  return count;
 }
 
 int Faces::getFaceFirstCorner(const int iF) const {
   // TODO
-  return -1;
+  if (iF < 0 || iF >= _nF) return -1;
+  return _faceFirstCorner[iF];
 }
 
 int Faces::getFaceVertex(const int iF, const int j) const {
   // TODO
-  return -1;
+  if (iF < 0 || iF >= _nF) return -1;
+
+  int start = _faceFirstCorner[iF];
+  int index = start +j;
+  if (index >= _coordIndex.size() || _coordIndex[index] == -1) return -1;
+  return _coordIndex[index];
+
+
 }
 
 int Faces::getCornerFace(const int iC) const {
   // TODO
-  return -1;
-}
+    if (iC < 0 || iC >= _cornerFace.size()) return -1;
+    return _cornerFace[iC];
+    }
 
 int Faces::getNextCorner(const int iC) const {
-  // TODO
-  return -1;
+        if (iC < 0 || iC >= _coordIndex.size()) return -1;
+        if (_coordIndex[iC] == -1) return -1;
+        if (iC + 1 < _coordIndex.size() && _coordIndex[iC + 1] == -1) {
+            int currentFace = _cornerFace[iC];
+            return _faceFirstCorner[currentFace];
+        }else {
+            return iC + 1;
+        }
+
 }
+
+
+
 
